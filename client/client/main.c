@@ -18,6 +18,7 @@
 
 int main(int argc, const char * argv[]) {
     int client_socket;
+    
     struct sockaddr_in server_addr;
     char buff[BUFF_SIZE];
     char message[BUFF_SIZE];
@@ -39,15 +40,20 @@ int main(int argc, const char * argv[]) {
             exit(1);
         }
         
+        //쓰기
+        printf("[client_send]");
         scanf("%s", message);
         write(client_socket, message, strlen(message) + 1);
         if(!strcmp(message, "bye"))
            break;
+        
+        //읽기
+        read(client_socket, buff, BUFF_SIZE);
+        printf("[server_rcv] %s\n", buff);
+        
+        close(client_socket);
     }
     
-    read(client_socket, buff, BUFF_SIZE);
-
-        
     close(client_socket);
 
     
