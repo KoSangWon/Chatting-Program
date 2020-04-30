@@ -46,11 +46,11 @@ int main(int argc, const char * argv[]) {
         write(client_socket, message, strlen(message) + 1);
         if(!strcmp(message, "bye"))
            break;
-//
-//        //읽기
-//        read(client_socket, buff, BUFF_SIZE);
-//        printf("[server_rcv] %s\n", buff);
-//        
+
+        //읽기
+        read(client_socket, buff, BUFF_SIZE);
+        printf("[server_rcv] %s\n", buff);
+
         close(client_socket);
     }
     

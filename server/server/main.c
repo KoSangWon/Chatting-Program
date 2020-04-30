@@ -27,10 +27,6 @@ int main(int argc, const char * argv[]) {
     
     char buff_rcv[BUFF_SIZE];
 
-    
-//    memset(&server_addr, 0x00, sizeof(server_addr));
-//    memset(&client_addr, 0x00, sizeof(client_addr));
-    
     server_socket = socket(PF_INET, SOCK_STREAM, 0);
     if(-1 == server_socket){
         printf("server socket 생성 실패\n");
@@ -66,12 +62,10 @@ int main(int argc, const char * argv[]) {
         printf("[client_recv] %s\n", buff_rcv);
         
         //쓰기
-        //sprintf(buff_snd, "%s", buff_rcv);
         char buff_snd[BUFF_SIZE];
         printf("[server_send] ");
         scanf("%s", buff_snd);
         write(client_socket, buff_snd, strlen(buff_snd) + 1);
-        //write(client_socket, buff_snd, strlen(buff_snd)+1);
         close(client_socket);
     }
     
