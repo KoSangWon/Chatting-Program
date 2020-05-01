@@ -13,18 +13,27 @@
 #include <arpa/inet.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/ioctl.h>
+#include <net/if.h>
 
 #define BUFF_SIZE 1024
 
 int main(int argc, const char * argv[]) {
     int client_socket;
+
+    //struct ifreq ifr;
     
     struct sockaddr_in server_addr;
     char buff[BUFF_SIZE];
     char message[BUFF_SIZE];
     
+    char ip_buf[BUFF_SIZE];
+
+    
     while(1){
+
         client_socket = socket(PF_INET, SOCK_STREAM, 0);
+        
         if(-1 == client_socket){
             printf("socket 생성 실패\n");
             exit(1);
@@ -40,18 +49,24 @@ int main(int argc, const char * argv[]) {
             exit(1);
         }
         
+        //ip_buf = inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr);
+        strcpy(ip_buf, "254.127.0.1"); //Hard Coding of Client IP
+
+        
         //쓰기
-        printf("[client_send]");
+        printf("[%s -> send] ", ip_buf);
         scanf("%s", message);
-        write(client_socket, message, strlen(message) + 1);
+        
         if(!strcmp(message, "bye"))
-           break;
+            break;
+        
+        write(client_socket, message, strlen(message) + 1);
+        
 
         //읽기
         read(client_socket, buff, BUFF_SIZE);
-        printf("[server_rcv] %s\n", buff);
+        printf("[%s -> rcv] %s\n", ip_buf, buff);
 
-        close(client_socket);
     }
     
     close(client_socket);

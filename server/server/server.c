@@ -13,6 +13,9 @@
 #include <arpa/inet.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/ioctl.h>
+#include <netinet/in.h>
+#include <net/if.h>
 
 #define BUFF_SIZE 1024
 
@@ -25,23 +28,40 @@ int main(int argc, const char * argv[]) {
     struct sockaddr_in server_addr;
     struct sockaddr_in client_addr;
     
+    struct ifreq ifr;
+    
     char buff_rcv[BUFF_SIZE];
-
+    char ip_buf[BUFF_SIZE];
+    
     server_socket = socket(PF_INET, SOCK_STREAM, 0);
     if(-1 == server_socket){
         printf("server socket 생성 실패\n");
         exit(1);
     }
     
+    ifr.ifr_addr.sa_family = PF_INET;
+    snprintf(ifr.ifr_name, IFNAMSIZ, "eth0");
+    
+    ioctl(server_socket, SIOCGIFADDR, &ifr);
+    
+    
+    int port_num = 4000;
+    
+    
     memset(&server_addr, 0, sizeof(server_addr));
     server_addr.sin_family = AF_INET;
-    server_addr.sin_port = htons(4000);
+    server_addr.sin_port = htons(port_num);
     server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
     
     if(-1 == bind(server_socket, (struct sockaddr*)&server_addr, sizeof(server_addr))){
         printf("bind() 실행 에러\n");
         exit(1);
     }
+    
+    printf("server IP : %s\n", inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr));
+    printf("PORT : %d\n", port_num);
+
+    strcpy(ip_buf, inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr));
     
     if(-1 == listen(server_socket, 5)){
         printf("listen()실행 실패\n");
@@ -59,14 +79,14 @@ int main(int argc, const char * argv[]) {
         
         //읽기
         read(client_socket, buff_rcv, BUFF_SIZE);
-        printf("[client_recv] %s\n", buff_rcv);
+        printf("[%s -> rcv] %s\n", ip_buf, buff_rcv);
         
         //쓰기
         char buff_snd[BUFF_SIZE];
-        printf("[server_send] ");
+        
+        printf("[%s -> send] ", ip_buf);
         scanf("%s", buff_snd);
         write(client_socket, buff_snd, strlen(buff_snd) + 1);
-        close(client_socket);
     }
     
     
