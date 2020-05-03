@@ -54,8 +54,8 @@ int main(int argc, const char * argv[]) {
             exit(1);
         }
         
-        strcpy(ip_buf, inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr));
-        //strcpy(ip_buf, "192.168.10.2"); //Hard Coding of Client IP
+        //strcpy(ip_buf, inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr));
+        strcpy(ip_buf, "192.168.10.2"); //Hard Coding of Client IP
 
         
         //쓰기

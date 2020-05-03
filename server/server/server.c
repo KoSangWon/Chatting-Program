@@ -60,11 +60,14 @@ int main(int argc, const char * argv[]) {
         exit(1);
     }
     
-    printf("server IP : %s\n", inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr));
+    //strcpy(ip_buf, inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr));
+    strcpy(ip_buf, "192.168.10.1"); //Hard Coding of Client IP    local이라 0.0.0.0이 나와 다음과 같이 대체하였습니다.
+    
+    //printf("server IP : %s\n", inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr));
+    printf("Server IP : %s \n", ip_buf);
     printf("PORT : %d\n", port_num);
 
-    strcpy(ip_buf, inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr));
-    //strcpy(ip_buf, "192.168.10.1"); //Hard Coding of Client IP    local이라 0.0.0.0이 나오므로 다음과 같이 대체하였습니다.
+    
     
     if(-1 == listen(server_socket, 5)){
         printf("listen()실행 실패\n");
