@@ -60,10 +60,8 @@ int main(int argc, const char * argv[]) {
         exit(1);
     }
     
-    //strcpy(ip_buf, inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr));
-    strcpy(ip_buf, "192.168.10.1"); //Hard Coding of Client IP    local이라 0.0.0.0이 나와 다음과 같이 대체하였습니다.
+    strcpy(ip_buf, inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr));
     
-    //printf("server IP : %s\n", inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr));
     printf("Server IP : %s \n", ip_buf);
     printf("PORT : %d\n", port_num);
 
@@ -83,21 +81,21 @@ int main(int argc, const char * argv[]) {
             exit(1);
         }
         
-        //읽기
-            read(client_socket, buff_rcv, BUFF_SIZE);
-            printf("%s\n", buff_rcv);
+    //읽기
+        read(client_socket, buff_rcv, BUFF_SIZE);
+        printf("%s\n", buff_rcv);
 
-            //쓰기
-            printf("[%s -> send] ", ip_buf);
-            scanf("%s", message);
+        //쓰기
+        printf("[%s -> send] ", ip_buf);
+        scanf("%s", message);
 
-            strcpy(totalMessage, "[");
-            strcat(totalMessage, ip_buf);
-            strcat(totalMessage, " -> rcv] ");
-            strcat(totalMessage, message);
+        strcpy(totalMessage, "[");
+        strcat(totalMessage, ip_buf);
+        strcat(totalMessage, " -> rcv] ");
+        strcat(totalMessage, message);
 
-            write(client_socket, totalMessage, strlen(totalMessage) + 1);
-        }
+        write(client_socket, totalMessage, strlen(totalMessage) + 1);
+    }
     
     
     return 0;
