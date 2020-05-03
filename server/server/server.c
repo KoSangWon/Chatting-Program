@@ -32,6 +32,8 @@ int main(int argc, const char * argv[]) {
     
     char buff_rcv[BUFF_SIZE];
     char ip_buf[BUFF_SIZE];
+    char message[BUFF_SIZE];
+    char totalMessage[BUFF_SIZE];
     
     server_socket = socket(PF_INET, SOCK_STREAM, 0);
     if(-1 == server_socket){
@@ -62,6 +64,7 @@ int main(int argc, const char * argv[]) {
     printf("PORT : %d\n", port_num);
 
     strcpy(ip_buf, inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr));
+    //strcpy(ip_buf, "192.168.10.1"); //Hard Coding of Client IP    local이라 0.0.0.0이 나오므로 다음과 같이 대체하였습니다.
     
     if(-1 == listen(server_socket, 5)){
         printf("listen()실행 실패\n");
@@ -78,17 +81,20 @@ int main(int argc, const char * argv[]) {
         }
         
         //읽기
-        read(client_socket, buff_rcv, BUFF_SIZE);
-        printf("[%s -> rcv] %s\n", ip_buf, buff_rcv);
-        
-        //쓰기
-        char buff_snd[BUFF_SIZE];
-        
-        printf("[%s -> send] ", ip_buf);
-        scanf("%s", buff_snd);
-        write(client_socket, buff_snd, strlen(buff_snd) + 1);
-    }
-    
+            read(client_socket, buff_rcv, BUFF_SIZE);
+            printf("%s\n", buff_rcv);
+
+            //쓰기
+            printf("[%s -> send] ", ip_buf);
+            scanf("%s", message);
+
+            strcpy(totalMessage, "[");
+            strcat(totalMessage, ip_buf);
+            strcat(totalMessage, " -> rcv] ");
+            strcat(totalMessage, message);
+
+            write(client_socket, totalMessage, strlen(totalMessage) + 1);
+        }
     
     
     return 0;

@@ -21,11 +21,12 @@
 int main(int argc, const char * argv[]) {
     int client_socket;
 
-    //struct ifreq ifr;
+    struct ifreq ifr;
     
     struct sockaddr_in server_addr;
     char buff[BUFF_SIZE];
     char message[BUFF_SIZE];
+    char totalMessage[BUFF_SIZE];
     
     char ip_buf[BUFF_SIZE];
 
@@ -33,11 +34,15 @@ int main(int argc, const char * argv[]) {
     while(1){
 
         client_socket = socket(PF_INET, SOCK_STREAM, 0);
+        strncpy(ifr.ifr_name, "enp0s3", IFNAMSIZ);
+        ioctl(client_socket, SIOCGIFADDR, &ifr);
         
         if(-1 == client_socket){
             printf("socket 생성 실패\n");
             exit(1);
         }
+        
+    
         
         memset(&server_addr, 0, sizeof(server_addr));
         server_addr.sin_family = AF_INET;
@@ -49,23 +54,28 @@ int main(int argc, const char * argv[]) {
             exit(1);
         }
         
-        //ip_buf = inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr);
-        strcpy(ip_buf, "254.127.0.1"); //Hard Coding of Client IP
+        strcpy(ip_buf, inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr));
+        //strcpy(ip_buf, "192.168.10.2"); //Hard Coding of Client IP
 
         
         //쓰기
         printf("[%s -> send] ", ip_buf);
         scanf("%s", message);
         
+        strcpy(totalMessage, "[");
+        strcat(totalMessage, ip_buf);
+        strcat(totalMessage, " -> rcv] ");
+        strcat(totalMessage, message);
+        
         if(!strcmp(message, "bye"))
             break;
         
-        write(client_socket, message, strlen(message) + 1);
+        write(client_socket, totalMessage, strlen(totalMessage) + 1);
         
 
         //읽기
         read(client_socket, buff, BUFF_SIZE);
-        printf("[%s -> rcv] %s\n", ip_buf, buff);
+        printf("%s\n", buff);
 
     }
     
